@@ -1,9 +1,13 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SymbolTestUI : MonoBehaviour
 {
     public SymbolFactory factory;
     public SymbolCombiner combiner;
+
+    public SymbolMultiCombiner multiCombiner;
+    public List<SymbolBase> symbolsToCombine;
 
     [Header("Instancias de símbolos en escena")]
     public GameObject symbolAInstance;
@@ -38,6 +42,22 @@ public class SymbolTestUI : MonoBehaviour
             else
             {
                 Debug.LogWarning("Uno de los objetos no tiene un componente que implemente ISymbol.");
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.M)) // M para Multi
+        {
+            var symbolDataList = new List<SymbolData>();
+            foreach (var s in symbolsToCombine)
+            {
+                if (s != null)
+                    symbolDataList.Add(s.GetData());
+            }
+
+            SymbolData result = multiCombiner.Combine(symbolDataList);
+            if (result != null)
+            {
+                factory.CreateSymbol(result, new Vector2(0, 3));
             }
         }
     }
